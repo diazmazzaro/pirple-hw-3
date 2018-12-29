@@ -59,6 +59,8 @@ var crypto = require('crypto');
 var http = require('http');
 var https = require('https');
 var querystring = require('querystring');
+var path = require('path');
+var fs = require('fs');
 var StringDecoder = require('string_decoder').StringDecoder;
 
 // Container for all the helpers
@@ -287,6 +289,23 @@ utils.pullEndpoint = function(options, parseJSON, callback){
   if(body) req.write(Buffer.from(body).toString('utf8'));
   req.end();
 }
+
+// Get the contents of a static (public) asset
+utils.getStaticAsset = function(fileName,callback){
+  fileName = typeof(fileName) == 'string' && fileName.length > 0 ? fileName : false;
+  if(fileName){
+    var publicDir = path.join(__dirname,'/../public/');
+    fs.readFile(publicDir+fileName, function(err,data){
+      if(!err && data){
+        callback(false,data);
+      } else {
+        callback('No file could be found');
+      }
+    });
+  } else {
+    callback('A valid file name was not specified');
+  }
+};
 
 // Export the module
 module.exports = utils;

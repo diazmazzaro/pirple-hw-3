@@ -7,6 +7,9 @@
 var fs = require('fs');
 var path = require('path');
 
+// App Dependencies
+var shandlers = require('./handlers/_statics')
+
 const PATH_handlers = './handlers';
 
 // Default static handlers
@@ -27,6 +30,11 @@ router.loadHandlers = function() {
 	  router[name] = require(path.resolve(dir, file)).requests;
 	});
 }
+
+// Static assets handlers
+router['favicon.ico'] = shandlers.favicon;
+router['public']      = shandlers.public;
+router['']            = shandlers.tmpIndex;
 
 router.loadHandlers();
 
