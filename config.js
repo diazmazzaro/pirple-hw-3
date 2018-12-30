@@ -36,6 +36,12 @@ var environments = {
 	  'mailgun'       : {
       'key' : '4e28dcdd0845a4576edf856073e18d5d-059e099e-0e15e915',
       'from': 'Pirple Pizza Delivery System <pizzadelivery@pirple.com>'
+	  },
+	  'templateGlobals' : {
+	    'appName' : 'Pizza Delivery',
+	    'companyName' : 'PDMCompany, Inc.',
+	    'yearCreated' : '2019',
+	    'baseUrl' : 'http://localhost:2602/'
 	  }
 	},
 
@@ -66,6 +72,12 @@ var environments = {
 	  'mailgun'       : {
       'key' : '4e28dcdd0845a4576edf856073e18d5d-059e099e-0e15e915',
       'from': 'Pirple Pizza Delivery System <pizzadelivery@pirple.com>'
+	  },
+	  'templateGlobals' : {
+	    'appName' : 'Pizza Delivery',
+	    'companyName' : 'PDMCompany, Inc.',
+	    'yearCreated' : '2019',
+	    'baseUrl' : 'http://localhost:3012/'
 	  }
 	}
 }

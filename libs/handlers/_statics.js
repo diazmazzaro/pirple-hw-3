@@ -1,5 +1,6 @@
 // App Dependencies
-var utils = require('../utils');
+var utils     = require('../utils');
+var templates = require('../templates');
 
 var statics = {};
 
@@ -23,6 +24,7 @@ var HTML_index = '' +
   '</body>' +
  '</html>';
 
+// Get temporal index html for test
 statics.tmpIndex = function(data,callback){
   // Reject any request that isn't a GET
   if(data.method == 'get'){
@@ -33,6 +35,38 @@ statics.tmpIndex = function(data,callback){
   }
 };
 
+// Index
+statics.index = function(data,callback){
+  // Reject any request that isn't a GET
+  if(data.method == 'get'){
+    // Prepare data for interpolation
+    var templateData = {
+      'head.title' : 'Uptime Monitoring - Made Simple',
+      'head.description' : 'We offer free, simple uptime monitoring for HTTP/HTTPS sites all kinds. When your site goes down, we\'ll send you a text to let you know',
+      'body.class' : 'index'
+    };
+    // Read in a template as a string
+    templates.get('index',templateData,function(err,str){
+      if(!err && str){
+        // Add the universal header and footer
+        templates.addMasterTemplates(str,templateData,function(err,str){
+          if(!err && str){
+            // Return that page as HTML
+            callback(200,str,'html');
+          } else {
+            callback(500,undefined,'html');
+          }
+        });
+      } else {
+        callback(500,undefined,'html');
+      }
+    });
+  } else {
+    callback(405,undefined,'html');
+  }
+};
+
+// Favicon
 statics.favicon = function(data,callback){
   // Reject any request that isn't a GET
   if(data.method == 'get'){

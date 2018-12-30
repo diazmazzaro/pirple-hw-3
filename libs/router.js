@@ -34,7 +34,7 @@ router.loadHandlers = function() {
 // Static assets handlers
 router['favicon.ico'] = shandlers.favicon;
 router['public']      = shandlers.public;
-router['']            = shandlers.tmpIndex;
+router['']            = shandlers.index;
 
 router.loadHandlers();
 
