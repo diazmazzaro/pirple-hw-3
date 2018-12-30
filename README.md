@@ -1,6 +1,6 @@
-# pirple-hw-2
+# pirple-hw-3
 
-Pirple Homework Assignment #2
+Pirple Homework Assignment #3
 
 This API provides all endpoints for a Pizza Delivery application.
 
