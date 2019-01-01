@@ -12,7 +12,8 @@ body,p,h1,h2,h3,h4,h5,h6,div,span,header,footer,img,a,a:hover,a:active,a:visited
   font-size: 12px;
   font-weight: normal;
   text-decoration: none;
-  color: #1a1a1a;
+  color: #c70000;
+
   border-width: 0;
 }
 
@@ -125,7 +126,7 @@ body.index .blurb{
   border-color: #b3b3b3;
   border-style: dotted;
   border-width: 1px;
-  border-radius: 10px;
+  border-radius: 5px;
   padding: 20px;
   margin: 0 auto 20px auto;
   max-width: 500px;
@@ -215,6 +216,7 @@ input,select,option {
   border-radius: 2px;
   padding: 7px 1%;
   width: 100%;
+  background: #ffedd6
 }
 
 .checkboxGroup input{
@@ -233,7 +235,7 @@ input.disabled{
 
 .inputLabel{
   padding: 0 0 5px 0;
-  color: #808080;
+  color: #903b3b;
 }
 
 .backButton{

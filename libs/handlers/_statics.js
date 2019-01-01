@@ -41,12 +41,135 @@ statics.index = function(data,callback){
   if(data.method == 'get'){
     // Prepare data for interpolation
     var templateData = {
-      'head.title' : 'Uptime Monitoring - Made Simple',
-      'head.description' : 'We offer free, simple uptime monitoring for HTTP/HTTPS sites all kinds. When your site goes down, we\'ll send you a text to let you know',
+      'head.title' : 'Welcome',
+      'head.description' : 'Welcome to PDM\'s Pizza Delivery',
       'body.class' : 'index'
     };
     // Read in a template as a string
     templates.get('index',templateData,function(err,str){
+      if(!err && str){
+        // Add the universal header and footer
+        templates.addMasterTemplates(str,templateData,function(err,str){
+          if(!err && str){
+            // Return that page as HTML
+            callback(200,str,'html');
+          } else {
+            callback(500,undefined,'html');
+          }
+        });
+      } else {
+        callback(500,undefined,'html');
+      }
+    });
+  } else {
+    callback(405,undefined,'html');
+  }
+};
+
+// Create New Session
+statics.sessionCreate = function(data,callback){
+  // Reject any request that isn't a GET
+  if(data.method == 'get'){
+    // Prepare data for interpolation
+    var templateData = {
+      'head.title' : 'Login to your account.',
+      'head.description' : 'Please enter your phone number and password to access your account.',
+      'body.class' : 'sessionCreate'
+    };
+    // Read in a template as a string
+    templates.get('sessionCreate',templateData,function(err,str){
+      if(!err && str){
+        // Add the universal header and footer
+        templates.addMasterTemplates(str,templateData,function(err,str){
+          if(!err && str){
+            // Return that page as HTML
+            callback(200,str,'html');
+          } else {
+            callback(500,undefined,'html');
+          }
+        });
+      } else {
+        callback(500,undefined,'html');
+      }
+    });
+  } else {
+    callback(405,undefined,'html');
+  }
+};
+
+// Session has been deleted
+statics.sessionDeleted = function(data,callback){
+  // Reject any request that isn't a GET
+  if(data.method == 'get'){
+    // Prepare data for interpolation
+    var templateData = {
+      'head.title' : 'Logged Out',
+      'head.description' : 'You have been logged out of your account.',
+      'body.class' : 'sessionDeleted'
+    };
+    // Read in a template as a string
+    templates.get('sessionDeleted',templateData,function(err,str){
+      if(!err && str){
+        // Add the universal header and footer
+        templates.addMasterTemplates(str,templateData,function(err,str){
+          if(!err && str){
+            // Return that page as HTML
+            callback(200,str,'html');
+          } else {
+            callback(500,undefined,'html');
+          }
+        });
+      } else {
+        callback(500,undefined,'html');
+      }
+    });
+  } else {
+    callback(405,undefined,'html');
+  }
+};
+
+// Create Account
+statics.accountCreate = function(data,callback){
+  // Reject any request that isn't a GET
+  if(data.method == 'get'){
+    // Prepare data for interpolation
+    var templateData = {
+      'head.title' : 'Create an Account',
+      'head.description' : 'Signup is easy and only takes a few seconds.',
+      'body.class' : 'accountCreate'
+    };
+    // Read in a template as a string
+    templates.get('accountCreate',templateData,function(err,str){
+      if(!err && str){
+        // Add the universal header and footer
+        templates.addMasterTemplates(str,templateData,function(err,str){
+          if(!err && str){
+            // Return that page as HTML
+            callback(200,str,'html');
+          } else {
+            callback(500,undefined,'html');
+          }
+        });
+      } else {
+        callback(500,undefined,'html');
+      }
+    });
+  } else {
+    callback(405,undefined,'html');
+  }
+};
+
+// Dashboard (view all checks)
+statics.ordersList = function(data,callback){
+  // Reject any request that isn't a GET
+  if(data.method == 'get'){
+    // Prepare data for interpolation
+    var templateData = {
+      'head.title' : 'Orders History',
+      'body.class' : 'checksList'
+    };
+    // Read in a template as a string
+    templates.get('ordersList',templateData,function(err,str){
       if(!err && str){
         // Add the universal header and footer
         templates.addMasterTemplates(str,templateData,function(err,str){

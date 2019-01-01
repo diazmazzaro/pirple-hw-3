@@ -80,7 +80,12 @@ users.post = function(data,callback){
     });
 
   } else {
-    callback(400,{'Error' : 'Missing required fields'});
+    var msg = '';
+    if(!phone)
+      msg += 'Missing or invalid phone\n';
+    if(!email)
+      msg += 'Missing or invalid email\n';
+    callback(400,{'Error' : 'Missing reqfuired fields', 'message' : msg});
   }
 
 };

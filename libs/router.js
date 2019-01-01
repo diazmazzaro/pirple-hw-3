@@ -26,15 +26,24 @@ var router = {
 router.loadHandlers = function() {
 	var dir = path.resolve(__dirname, PATH_handlers);
 	fs.readdirSync(dir).forEach(file => {
-	  var name = /^([^\.]+)/.exec(file)[1];
+	  var name = 'api/' + /^([^\.]+)/.exec(file)[1];
 	  router[name] = require(path.resolve(dir, file)).requests;
 	});
 }
 
-// Static assets handlers
-router['favicon.ico'] = shandlers.favicon;
-router['public']      = shandlers.public;
-router['']            = shandlers.index;
+// Static assets and handlers
+router['favicon.ico']     = shandlers.favicon;
+router['public']          = shandlers.public;
+router['']                = shandlers.index;
+router['index']           = shandlers.index;
+router['account/create']  = shandlers.accountCreate;
+
+router['session/create']  = shandlers.sessionCreate;
+router['session/deleted'] = shandlers.sessionDeleted;
+
+router['orders/all']      = shandlers.ordersList;
+
+
 
 router.loadHandlers();
 
