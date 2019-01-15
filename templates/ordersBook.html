@@ -1,0 +1,41 @@
+<h1>Book an order</h1>
+<h2>Select meals from our menus</h2>
+<a class="backButton" href="/orders/all">Back</a>
+<hr />
+
+
+<div class="formWrapper">
+  <form id="checksCreate" action="/api/checks" method="POST">
+    <div class="formError"></div>
+    <div class="menuWrapper" id="menuContainer">
+
+      <div class="menuItem">
+        <div>
+          <img src="public/menu1.jpg">
+        </div>
+        <div>
+          GODFATHER
+        </div>
+      </div>
+
+      <div class="menuItem">
+        <div>
+          <img src="public/menu1.jpg">
+        </div>
+        <div>
+          GODFATHER 2
+        </div>
+      </div>
+      
+      
+    </div>
+
+
+
+
+
+    <div class="inputWrapper ctaWrapper">
+      <button type="submit" class="cta green">Create Check</button>
+    </div>
+  </form>
+</div>

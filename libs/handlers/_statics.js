@@ -189,6 +189,36 @@ statics.ordersList = function(data,callback){
   }
 };
 
+// Create a new check
+statics.ordersBook = function(data,callback){
+  // Reject any request that isn't a GET
+  if(data.method == 'get'){
+    // Prepare data for interpolation
+    var templateData = {
+      'head.title' : 'Book an order',
+      'body.class' : 'ordersBook'
+    };
+    // Read in a template as a string
+    templates.get('ordersBook',templateData,function(err,str){
+      if(!err && str){
+        // Add the universal header and footer
+        templates.addMasterTemplates(str,templateData,function(err,str){
+          if(!err && str){
+            // Return that page as HTML
+            callback(200,str,'html');
+          } else {
+            callback(500,undefined,'html');
+          }
+        });
+      } else {
+        callback(500,undefined,'html');
+      }
+    });
+  } else {
+    callback(405,undefined,'html');
+  }
+};
+
 // Favicon
 statics.favicon = function(data,callback){
   // Reject any request that isn't a GET

@@ -358,14 +358,19 @@ app.loadDataOnPage = function(){
     app.loadAccountEditPage();
   }
 
+  console.log(primaryClass)
   // Logic for dashboard page
   if(primaryClass == 'checksList'){
-    // app.loadChecksListPage();
+    app.loadChecksListPage();
   }
 
   // Logic for check details page
   if(primaryClass == 'checksEdit'){
     app.loadChecksEditPage();
+  }
+
+  if(primaryClass == 'ordersBook'){
+    app.loadOrdersBookPage();
   }
 };
 
@@ -402,13 +407,50 @@ app.loadAccountEditPage = function(){
 };
 
 // Load the dashboard page specifically
+app.loadOrdersBookPage = function(){
+  // Get the phone number from the current token, or log the user out if none is there
+  var email = typeof(app.config.sessionToken.email) == 'string' ? app.config.sessionToken.email : false;
+  if(email){
+    // Fetch the user data
+    var queryStringObject = {
+      'email' : email
+    };
+    app.client.request(undefined,'api/menus','GET',queryStringObject,undefined,function(statusCode,responsePayload){
+      if(statusCode == 200){
+        var menuData = responsePayload;
+        
+        // Make the check data into a table row
+        var div = document.getElementById("menuContainer");
+        div.innerHTML = "";
+        if(menuData){
+          var _menuStr = "";
+          menuData.forEach(function(menu){
+            _menuStr += "<div class=\"menuItem\"><div><img src=\"public/" + menu.id + ".jpg\"></div><div>" + menu.name + 
+                        "</div></div>"
+          });
+          div.innerHTML = _menuStr;
+        }
+
+
+
+      } else {
+        app.logUserOut();
+      }
+    });
+
+  } else {
+    app.logUserOut();
+  }
+};
+
+// Load the dashboard page specifically
 app.loadChecksListPage = function(){
   // Get the phone number from the current token, or log the user out if none is there
   var email = typeof(app.config.sessionToken.email) == 'string' ? app.config.sessionToken.email : false;
   if(email){
     // Fetch the user data
     var queryStringObject = {
-      'phone' : phone
+      'email' : email
     };
     app.client.request(undefined,'api/users','GET',queryStringObject,undefined,function(statusCode,responsePayload){
       if(statusCode == 200){
@@ -419,11 +461,11 @@ app.loadChecksListPage = function(){
 
           // Show each created check as a new row in the table
           allChecks.forEach(function(checkId){
-            // Get the data for the check
-            var newQueryStringObject = {
-              'id' : checkId
-            };
-            app.client.request(undefined,'api/checks','GET',newQueryStringObject,undefined,function(statusCode,responsePayload){
+            // // Get the data for the check
+            // var newQueryStringObject = {
+            //   'id' : checkId
+            // };
+            app.client.request(undefined,'api/menus','GET',newQueryStringObject,undefined,function(statusCode,responsePayload){
               if(statusCode == 200){
                 var checkData = responsePayload;
                 // Make the check data into a table row

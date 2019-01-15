@@ -42,6 +42,7 @@ router['session/create']  = shandlers.sessionCreate;
 router['session/deleted'] = shandlers.sessionDeleted;
 
 router['orders/all']      = shandlers.ordersList;
+router['orders/book']     = shandlers.ordersBook;
 
 
 

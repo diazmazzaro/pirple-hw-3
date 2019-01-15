@@ -251,6 +251,21 @@ input.disabled{
   cursor: pointer;
 }
 
+.menuWrapper{
+  display: table;
+} 
+.menuWrapper .menuItem{
+  width: 100px;
+  padding-right: 4px;
+  display: table-cell;
+}
+
+.menuWrapper .menuItem img{
+  width: 100px;
+  height: 100px;
+  border-radius: 3px 3px 0px 0px;
+}
+
 table{
   width: 100%;
 }
