@@ -30,6 +30,11 @@ orders.get = function(data,callback){
   // Check that all required fields are filled out
   var email = typeof(data.payload.email) == 'string' && data.payload.email.trim().length > 0  && utils.validEmail(data.payload.email.trim()) ? data.payload.email.trim() : false;
 
+  if(data.qsObj && data.qsObj.email)
+    email = typeof(data.qsObj.email) == 'string' && data.qsObj.email.trim().length > 0  ? data.qsObj.email.trim() : false;
+
+  
+  // Check that email is valid
   // Get user id (based on email)
   var id = utils.getValidDirName(email);
 

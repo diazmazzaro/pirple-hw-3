@@ -166,7 +166,7 @@ statics.ordersList = function(data,callback){
     // Prepare data for interpolation
     var templateData = {
       'head.title' : 'Orders History',
-      'body.class' : 'checksList'
+      'body.class' : 'ordersList'
     };
     // Read in a template as a string
     templates.get('ordersList',templateData,function(err,str){

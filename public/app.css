@@ -254,6 +254,11 @@ input.disabled{
 .menuWrapper{
   display: table;
 } 
+
+.menuItem{
+  cursor: pointer;
+}
+
 .menuWrapper .menuItem{
   width: 100px;
   padding-right: 4px;
@@ -311,4 +316,40 @@ td a, td a:hover, td a:active{
 #createCheckCTA{
   margin-top: 40px;
   display: none;
+}
+
+.shoppingBag {
+  margin: 5px;
+}
+
+.shoppingBag .shoppingBagHeader th, th{
+  text-transform: uppercase;
+  font-weight: bold;
+  padding: 10px;
+  border-color: #000;
+  border-style: dotted;
+  padding: 10px;
+  margin: 0 0 10px 0;
+  background-color: #f3e4d2;
+}
+
+.shoppingBag .shoppingRow td{
+  text-align: left;
+}
+
+.shoppingBag .shoppingRow td:last-child {
+  text-align: right;
+}
+
+.shoppingBag .shoppingRowTotal td{
+  text-transform: uppercase;
+  font-weight: bold;
+  border-color: #000;
+  border-style: dotted;
+  padding: 5px;
+  background-color: #efefef;
+}
+
+.shoppingBag .shoppingRowTotal td:last-child {
+  text-align: right;
 }

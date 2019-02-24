@@ -241,6 +241,21 @@ app.formResponseProcessor = function(formId,requestPayload,responsePayload){
       }
     });
   }
+
+  if(formId == 'checkout'){
+    // Take the phone and password, and use it to log the user in
+    var newPayload = {
+      'email' : requestPayload.email
+    };
+
+    var cardNumber = document.querySelector("#paymethod");
+    console.log('card', cardNumber)
+    // Set the formError field with the error text
+    document.querySelector("#"+formId+" .formError").innerHTML = '';
+
+    // Show (unhide) the form error field on the form
+    document.querySelector("#"+formId+" .formError").style.display = 'block';
+  }
   // If login was successful, set the token in localstorage and redirect the user
   if(formId == 'sessionCreate'){
     app.setSessionToken(responsePayload);
@@ -260,8 +275,8 @@ app.formResponseProcessor = function(formId,requestPayload,responsePayload){
   }
 
   // If the user just created a new check successfully, redirect back to the dashboard
-  if(formId == 'checksCreate'){
-    window.location = '/checks/all';
+  if(formId == 'checkout'){
+    window.location = '/orders/all';
   }
 
   // If the user just deleted a check, redirect them to the dashboard
@@ -352,7 +367,8 @@ app.loadDataOnPage = function(){
   // Get the current page from the body class
   var bodyClasses = document.querySelector("body").classList;
   var primaryClass = typeof(bodyClasses[0]) == 'string' ? bodyClasses[0] : false;
-
+  console.log(bodyClasses)
+  console.log(primaryClass)
   // Logic for account settings page
   if(primaryClass == 'accountEdit'){
     app.loadAccountEditPage();
@@ -364,6 +380,11 @@ app.loadDataOnPage = function(){
     app.loadChecksListPage();
   }
 
+  // Logic for dashboard page
+  if(primaryClass == 'ordersList'){
+    app.loadOrdersListPage();
+  }
+
   // Logic for check details page
   if(primaryClass == 'checksEdit'){
     app.loadChecksEditPage();
@@ -371,6 +392,10 @@ app.loadDataOnPage = function(){
 
   if(primaryClass == 'ordersBook'){
     app.loadOrdersBookPage();
+    var email = typeof(app.config.sessionToken.email) == 'string' ? app.config.sessionToken.email : false;
+    if(email){
+      document.querySelector("#email").value = email;
+    }
   }
 };
 
@@ -406,6 +431,61 @@ app.loadAccountEditPage = function(){
   }
 };
 
+app.addMenuEvent = function(domMenu){
+  var _menu = domMenu.getAttribute("data-id");
+  console.log('new item added:', _menu)
+  app.createOrder(_menu)
+}
+
+
+// Load the dashboard page specifically
+app.createOrder = function(menuId){
+  // Get the phone number from the current token, or log the user out if none is there
+  var email = typeof(app.config.sessionToken.email) == 'string' ? app.config.sessionToken.email : false;
+  if(email){
+    // Fetch the user data
+    var newPayload = {
+      'email' : email,
+      'menuId' : menuId
+    };
+    app.client.request(undefined,'api/orders','POST',undefined,newPayload,function(statusCode,responsePayload){
+      if(statusCode == 200){
+        var menuData = responsePayload;
+        window.alert('Item added to the shopping bag.')
+
+        var table = document.getElementById("shoppingBag");
+        var rows = table.rows.length;
+        while(--rows > 1){
+          table.deleteRow(rows)  
+        }
+
+        
+        
+        app.loadOrdersBookPage();
+        // // Make the check data into a table row
+        // var div = document.getElementById("menuContainer");
+        // div.innerHTML = "";
+        // if(menuData){
+        //   var _menuStr = "";
+        //   menuData.forEach(function(menu){
+        //     _menuStr += "<div class=\"menuItem\" onClick=\"app.addMenuEvent(this)\" data-id=" + menu.id + "><div><img src=\"public/" + menu.id + ".jpg\"></div><div>" + menu.name + 
+        //                 "</div></div>"
+        //   });
+        //   div.innerHTML = _menuStr;
+        // }
+
+
+
+      } else {
+        app.logUserOut();
+      }
+    });
+
+  } else {
+    app.logUserOut();
+  }
+};
+
 // Load the dashboard page specifically
 app.loadOrdersBookPage = function(){
   // Get the phone number from the current token, or log the user out if none is there
@@ -425,14 +505,63 @@ app.loadOrdersBookPage = function(){
         if(menuData){
           var _menuStr = "";
           menuData.forEach(function(menu){
-            _menuStr += "<div class=\"menuItem\"><div><img src=\"public/" + menu.id + ".jpg\"></div><div>" + menu.name + 
+            _menuStr += "<div class=\"menuItem\" onClick=\"app.addMenuEvent(this)\" data-id=" + menu.id + "><div><img src=\"public/" + menu.id + ".jpg\"></div><div>" + menu.name + 
                         "</div></div>"
           });
           div.innerHTML = _menuStr;
         }
 
+        app.client.request(undefined,'api/orders','GET',queryStringObject,undefined,function(statusCode,responsePayloadList){
+          if(statusCode == 200){
+            console.log('orders -->', responsePayloadList)
+            var orders = responsePayloadList.orders;
+            if(orders && orders.length){
+              var menus = {}
+              orders.forEach(order => {
+                if(!order.purchased){
+                  if(!menus[order.menuId])
+                    menus[order.menuId] = { menuId : order.menuId, count : 0, total : 0.0};
+                  menus[order.menuId].count +=1;
+                  menus[order.menuId].total += order.price;  
+                }
+              });
+              console.log(menus)
+              var total = 0.0;
+              for(var m in menus){
+                var sum = menus[m];
+                console.log('menu', sum)
+                var table = document.getElementById("shoppingBag");
+                var tr = table.insertRow(-1);
+                tr.classList.add('shoppingRow');
+                var td0 = tr.insertCell(0);
+                var td1 = tr.insertCell(1);
+                var td2 = tr.insertCell(2);
+                td0.innerHTML = sum.menuId;
+                td1.innerHTML = sum.count;
+                td2.innerHTML = sum.total.toFixed(2);
+                total += sum.total;
+              }
 
+              var table = document.getElementById("shoppingBag");
+              var tr = table.insertRow(-1);
+              tr.classList.add('shoppingRowTotal');
+              var td0 = tr.insertCell(0);
+              var td1 = tr.insertCell(1);
+              var td2 = tr.insertCell(2);
+              td0.innerHTML = 'TOTAL';
+              td1.innerHTML = '';
+              td2.innerHTML = total.toFixed(2);
+              
 
+              
+
+              // var state = typeof(responsePayload.state) == 'string' ? responsePayload.state : 'unknown';
+              // td3.innerHTML = state;
+              // td4.innerHTML = '<a href="/checks/edit?id='+responsePayload.id+'">View / Edit / Delete</a>';
+              
+            }
+          }
+        });
       } else {
         app.logUserOut();
       }
@@ -444,7 +573,7 @@ app.loadOrdersBookPage = function(){
 };
 
 // Load the dashboard page specifically
-app.loadChecksListPage = function(){
+app.loadOrdersListPage = function(){
   // Get the phone number from the current token, or log the user out if none is there
   var email = typeof(app.config.sessionToken.email) == 'string' ? app.config.sessionToken.email : false;
   if(email){
@@ -455,53 +584,49 @@ app.loadChecksListPage = function(){
     app.client.request(undefined,'api/users','GET',queryStringObject,undefined,function(statusCode,responsePayload){
       if(statusCode == 200){
 
-        // Determine how many checks the user has
-        var allChecks = typeof(responsePayload.checks) == 'object' && responsePayload.checks instanceof Array && responsePayload.checks.length > 0 ? responsePayload.checks : [];
-        if(allChecks.length > 0){
-
-          // Show each created check as a new row in the table
-          allChecks.forEach(function(checkId){
-            // // Get the data for the check
-            // var newQueryStringObject = {
-            //   'id' : checkId
-            // };
-            app.client.request(undefined,'api/menus','GET',newQueryStringObject,undefined,function(statusCode,responsePayload){
+     
+            app.client.request(undefined,'api/orders','GET',queryStringObject,undefined,function(statusCode,responsePayload){
               if(statusCode == 200){
-                var checkData = responsePayload;
-                // Make the check data into a table row
-                var table = document.getElementById("checksListTable");
-                var tr = table.insertRow(-1);
-                tr.classList.add('checkRow');
-                var td0 = tr.insertCell(0);
-                var td1 = tr.insertCell(1);
-                var td2 = tr.insertCell(2);
-                var td3 = tr.insertCell(3);
-                var td4 = tr.insertCell(4);
-                td0.innerHTML = responsePayload.method.toUpperCase();
-                td1.innerHTML = responsePayload.protocol+'://';
-                td2.innerHTML = responsePayload.url;
-                var state = typeof(responsePayload.state) == 'string' ? responsePayload.state : 'unknown';
-                td3.innerHTML = state;
-                td4.innerHTML = '<a href="/checks/edit?id='+responsePayload.id+'">View / Edit / Delete</a>';
+                console.log(responsePayload)
+                var orders = responsePayload.orders;
+                if(orders.length){
+                  var idx = 0;
+                  orders.forEach(order => {
+                    var table = document.getElementById("checksListTable");
+                    var tr = table.insertRow(-1);
+                    tr.classList.add('checkRow');
+                    var td0 = tr.insertCell(0);
+                    var td1 = tr.insertCell(1);
+                    var td2 = tr.insertCell(2);
+                    var td3 = tr.insertCell(3);
+                    td0.innerHTML = ++idx;
+                    td1.innerHTML = order.menuId;
+                    td2.innerHTML = 'Description for ' + order.menuId;
+                    td3.innerHTML = order.purchased ? 'purchased' : 'Ready to Checkout';
+                    // var state = typeof(responsePayload.state) == 'string' ? responsePayload.state : 'unknown';
+                    // td3.innerHTML = state;
+                    // td4.innerHTML = '<a href="/checks/edit?id='+responsePayload.id+'">View / Edit / Delete</a>';
+                  });
+                  
+                }
+                else{
+                  // Show 'you have no checks' message
+                  document.getElementById("noChecksMessage").style.display = 'table-row';
+                }
+                
               } else {
                 console.log("Error trying to load check ID: ",checkId);
               }
             });
-          });
 
-          if(allChecks.length < 5){
-            // Show the createCheck CTA
-            document.getElementById("createCheckCTA").style.display = 'block';
-          }
-
-        } else {
-          // Show 'you have no checks' message
-          document.getElementById("noChecksMessage").style.display = 'table-row';
+        // } else {
+        //   // Show 'you have no checks' message
+        //   document.getElementById("noChecksMessage").style.display = 'table-row';
 
           // Show the createCheck CTA
           document.getElementById("createCheckCTA").style.display = 'block';
 
-        }
+        // }
       } else {
         // If the request comes back as something other than 200, log the user our (on the assumption that the api is temporarily down or the users token is bad)
         app.logUserOut();

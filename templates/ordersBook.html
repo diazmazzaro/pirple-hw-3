@@ -5,7 +5,7 @@
 
 
 <div class="formWrapper">
-  <form id="checksCreate" action="/api/checks" method="POST">
+  <form id="checkout" action="/api/checkout" method="POST">
     <div class="formError"></div>
     <div class="menuWrapper" id="menuContainer">
 
@@ -29,13 +29,39 @@
       
       
     </div>
-
-
-
-
-
+    <hr>
+    <div class="shoppingBag">
+      Items into the shopping bag
+    </div>
+    <div class="shoppingBag">
+      <table class="shoppingBagList" id="shoppingBag">
+        <tr class="shoppingBagHeader">
+          <th>Menu</th><th>Quantity</th><th>Subtotal</th>
+        </tr>
+      </table>
+    </div>
+    <hr>
+    <div class="paymentMethod">
+      <div class="inputWrapper">
+        <div class="inputLabel">Credit card</div>
+         <select name="card" style="height: 30px;s">
+            <option value="visa">Visa</option>
+            <option value="mastercard">MasterCard</option>
+            <option value="amex" selected>American Express</option>
+          </select>
+      </div>
+      <div class="inputWrapper">
+        <div class="inputLabel">Number</div>
+        <input type="number" name="number" placeholder="" />
+      </div>
+      <div class="inputWrapper">
+        <div class="inputLabel">CVV</div>
+        <input type="number" name="cvv" placeholder=""/>
+      </div>
+      <input type="hidden" name="email" id="email" placeholder=""/>
+    </div>
     <div class="inputWrapper ctaWrapper">
-      <button type="submit" class="cta green">Create Check</button>
+      <button type="submit" class="cta green">Checkout</button>
     </div>
   </form>
 </div>
